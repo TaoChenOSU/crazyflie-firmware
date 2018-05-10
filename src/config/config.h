@@ -96,6 +96,10 @@
 #define SYSLINK_TASK_PRI        5
 #define USBLINK_TASK_PRI        3
 
+// not sure what the weight task priority should be
+// assume it to be 3 for now
+#define WEIGHTS_TASK_PRI        3
+
 // Not compiled
 #if 0
   #define INFO_TASK_PRI           2
@@ -127,6 +131,7 @@
 #define USDWRITE_TASK_NAME      "USDWRITE"
 #define PCA9685_TASK_NAME       "PCA9685"
 #define CMD_HIGH_LEVEL_TASK_NAME "CMDHL"
+#define WEIGHTS_TASK_NAME       "WEIGHTS"
 
 //Task stack sizes
 #define SYSTEM_TASK_STACKSIZE         (2* configMINIMAL_STACK_SIZE)
@@ -152,6 +157,7 @@
 #define USDWRITE_TASK_STACKSIZE       (2 * configMINIMAL_STACK_SIZE)
 #define PCA9685_TASK_STACKSIZE        (2 * configMINIMAL_STACK_SIZE)
 #define CMD_HIGH_LEVEL_TASK_STACKSIZE configMINIMAL_STACK_SIZE
+#define WEIGHTS_TASK_STACKSIZE        configMINIMAL_STACK_SIZE
 
 //The radio channel. From 0 to 125
 #define RADIO_CHANNEL 80

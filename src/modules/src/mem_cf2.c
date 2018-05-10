@@ -1,6 +1,6 @@
 /**
- *    ||          ____  _ __                           
- * +------+      / __ )(_) /_______________ _____  ___ 
+ *    ||          ____  _ __
+ * +------+      / __ )(_) /_______________ _____  ___
  * | 0xBC |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
  * +------+    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
  *  ||  ||    /_____/_/\__/\___/_/   \__,_/ /___/\___/
@@ -44,6 +44,7 @@
 #include "ledring12.h"
 #include "locodeck.h"
 #include "crtp_commander_high_level.h"
+#include "weights.h"
 
 #include "console.h"
 #include "assert.h"
@@ -67,7 +68,8 @@
 #define LEDMEM_ID       0x01
 #define LOCO_ID         0x02
 #define TRAJ_ID         0x03
-#define OW_FIRST_ID     0x04
+#define WEIGHT_ID       0x04
+#define OW_FIRST_ID     0x05
 
 #define STATUS_OK 0
 
@@ -76,6 +78,7 @@
 #define MEM_TYPE_LED12  0x10
 #define MEM_TYPE_LOCO   0x11
 #define MEM_TYPE_TRAJ   0x12
+#define MEM_TYPE_WEIGHT 0x13
 
 #define MEM_LOCO_INFO             0x0000
 #define MEM_LOCO_ANCHOR_BASE      0x1000
@@ -112,7 +115,7 @@ void memInit(void)
     isInit = true;
   else
     isInit = false;
-  
+
   //Start the mem task
   xTaskCreate(memTask, MEM_TASK_NAME,
               MEM_TASK_STACKSIZE, NULL, MEM_TASK_PRI, NULL);
@@ -126,7 +129,7 @@ bool memTest(void)
 void memTask(void * param)
 {
 	crtpInitTaskQueue(CRTP_PORT_MEM);
-	
+
 	while(1)
 	{
 		crtpReceivePacketBlock(CRTP_PORT_MEM, &p);
@@ -197,6 +200,9 @@ void createInfoResponse(CRTPPacket* p, uint8_t memId)
     case TRAJ_ID:
       createInfoResponseBody(p, MEM_TYPE_TRAJ, sizeof(trajectories_memory), noData);
       break;
+    case WEIGHT_ID:
+      createInfoResponseBody(p, MEM_TYPE_WEIGHT, WEIGHTS_MEMORY_SIZE, noData);
+      break;
     default:
       if (owGetinfo(memId - OW_FIRST_ID, &serialNbr))
       {
@@ -262,6 +268,17 @@ void memReadProcess()
       {
         if (memAddr + readLen <= sizeof(trajectories_memory) &&
             memcpy(&p.data[6], &(trajectories_memory[memAddr]), readLen)) {
+          status = STATUS_OK;
+        } else {
+          status = EIO;
+        }
+      }
+      break;
+
+    case WEIGHT_ID:
+      {
+        if (memAddr + readLen <= WEIGHTS_MEMORY_SIZE &&
+            memcpy(&p.data[6], &(weights_received_memory[memAddr]), readLen)) {
           status = STATUS_OK;
         } else {
           status = EIO;
@@ -389,6 +406,17 @@ void memWriteProcess()
       {
         if ((memAddr + writeLen) <= sizeof(trajectories_memory)) {
           memcpy(&(trajectories_memory[memAddr]), &p.data[5], writeLen);
+          status = STATUS_OK;
+        } else {
+          status = EIO;
+        }
+      }
+      break;
+
+    case WEIGHT_ID:
+      {
+        if ((memAddr + writeLen) <= WEIGHTS_MEMORY_SIZE) {
+          memcpy(&(weights_received_memory[memAddr]), &p.data[5], writeLen);
           status = STATUS_OK;
         } else {
           status = EIO;
