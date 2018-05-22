@@ -21,16 +21,16 @@ DEBUG             ?= 0
 CLOAD_SCRIPT      ?= python3 -m cfloader
 CLOAD_CMDS        ?=
 CLOAD_ARGS        ?=
-PLATFORM					?= CF2
+PLATFORM	  ?= CF2
 LPS_TDMA_ENABLE   ?= 0
 LPS_TDOA_ENABLE   ?= 0
 
 ######### Stabilizer configuration ##########
 ##### Sets the name of the stabilizer module to use.
 ESTIMATOR          ?= any
-CONTROLLER         ?= pid
+CONTROLLER         ?= mellinger
 POWER_DISTRIBUTION ?= stock
-SENSORS 					 ?= cf2
+SENSORS 	   ?= cf2
 
 ######### Test activation ##########
 FATFS_DISKIO_TESTS  ?= 0	# Set to 1 to enable FatFS diskio function tests. Erases card.
@@ -163,7 +163,7 @@ PROJ_OBJ_CF2 += estimator_kalman.o
 PROJ_OBJ += crtp_commander_high_level.o planner.o pptraj.o
 
 # Weights 
-PROJ_OBJ += weights.o
+PROJ_OBJ += weights.o 
 
 # Deck Core
 PROJ_OBJ_CF2 += deck.o deck_info.o deck_drivers.o deck_test.o
