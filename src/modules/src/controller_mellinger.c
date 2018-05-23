@@ -50,13 +50,15 @@ static float massThrust = 132000;
 // XY Position PID
 static float kp_xy = 0.4;       // P
 static float kd_xy = 0.2;       // D
-static float ki_xy = 0.05;      // I
+//static float ki_xy = 0.05;      // I
+static float ki_xy = 0.0;	// temporary disable the I gain
 static float i_range_xy = 2.0;
 
 // Z Position
 static float kp_z = 1.25;       // P
 static float kd_z = 0.4;        // D
-static float ki_z = 0.05;       // I
+//static float ki_z = 0.05;       // I
+static float ki_z = 0.0;	// temporary disable the I gain
 static float i_range_z  = 0.4;
 
 // Attitude
@@ -68,7 +70,8 @@ static float i_range_m_xy = 1.0;
 // Yaw
 static float kR_z = 60000; // P
 static float kw_z = 12000; // D
-static float ki_m_z = 500; // I
+//static float ki_m_z = 500; // I
+static float ki_m_z = 0.0;	// temporary disable the I gain
 static float i_range_m_z  = 1500;
 
 // roll and pitch angular velocity
